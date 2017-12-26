@@ -1,7 +1,12 @@
 var c = {};
 var rc = document.getElementById("resistorValue");
+var first = true;
 for (var id of ["sourceVoltage", "ledVoltage", "ledForwardCurrent"]) {
 	c[id] = document.getElementById(id);
+	if (first) {
+		c[id].focus();
+		first = false;
+	}
 }
 var fig = {};
 for (var id of ["figSourceVoltage", "figLedVoltage", "figResistorValue"]) {
