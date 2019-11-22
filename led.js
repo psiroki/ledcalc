@@ -1,3 +1,4 @@
+var OMEGA = "\u03a9";
 var c = {};
 var rc = document.getElementById("resistorValue");
 var first = true;
@@ -8,6 +9,8 @@ for (var id of ["sourceVoltage", "ledVoltage", "ledForwardCurrent"]) {
 		first = false;
 	}
 }
+var altRView = document.getElementById("altRView");
+altRView.remove();
 var fig = {};
 for (var id of ["figSourceVoltage", "figLedVoltage", "figResistorValue"]) {
 	var rawId = id.substring(3);
@@ -87,7 +90,7 @@ function Resistance(v) {
 
 Resistance.prototype = {
 	toString() {
-		return formatUnit(this.v, "\u03a9");
+		return formatUnit(this.v, OMEGA);
 	},
 	
 	formattedAmps(ledParams) {
@@ -156,6 +159,17 @@ function handleChange(event) {
 		rc.className = "";
 		rc.textContent = "Exact: "+r+"\n"+r.toE12().map(r =>
 			"At "+r.toString()+": "+r.formattedAmps(mapped)).join("\n");
+		altRView = altRView.cloneNode(true);
+		rc.appendChild(altRView);
+		var altR = altRView.querySelector("#altR");
+		var customR = function (e) {
+			var thisR = new Resistance(parseValue(altR.value));
+			var txt = altR.nextSibling;
+			if (!txt) altR.parentNode.appendChild(txt = document.createTextNode(""));
+			txt.textContent = OMEGA + ": "+thisR.formattedAmps(mapped);
+		};
+		altR.addEventListener("input", customR);
+		customR({});
 	}
 }
 
